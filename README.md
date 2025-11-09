@@ -87,6 +87,139 @@ The `@consent` directive supports the following categories:
 
 **Note:** The directive accepts only a single category string, not an array.
 
+## Reading Consent State in Controllers
+
+You can read the user's consent state in your controllers, middleware, or anywhere in your Laravel application using the `ConsentStudio` facade or the `consent()` helper function.
+
+### Facade Usage
+
+```php
+use ConsentStudio\Laravel\Facades\ConsentStudio;
+
+// Check if user has seen the banner
+if (ConsentStudio::seenBanner()) {
+    // Banner was shown to the user
+}
+
+// Get the consent ID
+$consentId = ConsentStudio::id(); // Returns string|null
+
+// Check if a specific consent category is granted
+if (ConsentStudio::granted('marketing')) {
+    // Marketing consent is granted
+}
+
+// Alternative method (alias)
+if (ConsentStudio::has('analytics')) {
+    // Analytics consent is granted
+}
+
+// Check if any of multiple categories are granted
+if (ConsentStudio::any(['marketing', 'analytics'])) {
+    // At least one is granted
+}
+
+// Check if all of multiple categories are granted
+if (ConsentStudio::all(['functional', 'analytics'])) {
+    // Both are granted
+}
+
+// Get all granted consent categories
+$consents = ConsentStudio::all(); // Returns array: ['functional', 'analytics', 'marketing']
+
+// Get complete consent state
+$state = ConsentStudio::state();
+// Returns: ['id' => 'xxx', 'seen' => true, 'consents' => ['functional', 'analytics']]
+```
+
+### Helper Function Usage
+
+```php
+// No arguments: returns the manager instance for chaining
+consent()->id(); // 'abc-123-def'
+consent()->seenBanner(); // true
+
+// String argument: checks if the category is granted
+consent('marketing'); // true or false
+
+// Array argument: checks if any of the categories are granted
+consent(['marketing', 'analytics']); // true or false
+```
+
+### Practical Examples
+
+**Conditional Logic in Controllers:**
+
+```php
+public function index()
+{
+    // Show different content based on consent
+    if (ConsentStudio::granted('marketing')) {
+        // Load personalized recommendations
+        $recommendations = $this->getPersonalizedRecommendations();
+    } else {
+        // Load generic content
+        $recommendations = $this->getGenericRecommendations();
+    }
+
+    return view('home', compact('recommendations'));
+}
+```
+
+**Middleware Example:**
+
+```php
+public function handle($request, Closure $next)
+{
+    if (!consent('analytics')) {
+        // Skip analytics tracking
+        config(['analytics.enabled' => false]);
+    }
+
+    return $next($request);
+}
+```
+
+**Conditional View Rendering:**
+
+```php
+// In your controller
+return view('dashboard', [
+    'canShowAds' => ConsentStudio::granted('marketing'),
+    'consentId' => ConsentStudio::id(),
+]);
+```
+
+```blade
+{{-- In your Blade view --}}
+@if(consent('marketing'))
+    <div class="advertisement">
+        <!-- Show ads -->
+    </div>
+@endif
+```
+
+### Cookie Details
+
+The consent state is stored in the following cookies:
+
+- `consent-studio__seen` - Whether the user has seen the banner (true/false)
+- `consent-studio__consent-id` - The unique consent ID for this user
+- `consent-studio__storage` - URL-encoded JSON array of granted consents (e.g., `["functional","analytics","marketing"]`)
+
+All methods automatically handle cookie decoding and edge cases (missing cookies, malformed data, etc.).
+
+### CLI and Queue Jobs
+
+When used in CLI contexts (artisan commands, queue jobs, etc.) where no HTTP request is available, all methods return safe defaults:
+
+- `seenBanner()` returns `false`
+- `id()` returns `null`
+- `granted()`, `has()`, `any()`, `all()` return `false` or `[]`
+- No errors or exceptions are thrown
+
+This ensures your code works reliably in all Laravel contexts without requiring conditional checks.
+
 ## Blade Directive Examples
 
 ### Inline Scripts

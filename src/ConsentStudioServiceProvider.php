@@ -16,6 +16,22 @@ class ConsentStudioServiceProvider extends ServiceProvider
             __DIR__.'/../config/consent-studio.php',
             'consent-studio'
         );
+
+        // Register the ConsentStudioManager as a singleton
+        $this->app->singleton('consent-studio', function ($app) {
+            // Check if we're in a web request context
+            try {
+                $request = $app->make('request');
+            } catch (\Exception $e) {
+                // If no request is available (CLI, queue jobs, etc.), pass null
+                $request = null;
+            }
+
+            return new ConsentStudioManager($request);
+        });
+
+        // Load helper functions
+        require_once __DIR__.'/helpers.php';
     }
 
     /**

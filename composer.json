@@ -21,7 +21,10 @@
     "autoload": {
         "psr-4": {
             "ConsentStudio\\Laravel\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -32,7 +35,10 @@
         "laravel": {
             "providers": [
                 "ConsentStudio\\Laravel\\ConsentStudioServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "ConsentStudio": "ConsentStudio\\Laravel\\Facades\\ConsentStudio"
+            }
         }
     },
     "minimum-stability": "dev",
