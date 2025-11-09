@@ -2,7 +2,7 @@
 
 All notable changes to `consent-studio/laravel` will be documented in this file.
 
-## 1.0.0 - 2025-01-XX
+## 1.0.0 - 2025-11-10
 
 - Initial release
 - Laravel 10 and 11 support
@@ -13,3 +13,4 @@ All notable changes to `consent-studio/laravel` will be documented in this file.
 - Support for all HTML elements (script, iframe, img, video, audio, embed, source, track)
 - Automatic src to data-src transformation
 - Support for functional, analytics, marketing, and neutral consent categories
+- Facade and helper function for request based conditions
