@@ -1,7 +1,6 @@
 # Consent Studio Laravel Package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/consent-studio/laravel.svg?style=flat-square)](https://packagist.org/packages/consent-studio/laravel)
-[![Total Downloads](https://img.shields.io/packagist/dt/consent-studio/laravel.svg?style=flat-square)](https://packagist.org/packages/consent-studio/laravel)
 
 Laravel package for [Consent Studio](https://consent.studio) CMP (Consent Management Platform) integration. Easily integrate GDPR-compliant cookie consent management into your Laravel applications.
 
